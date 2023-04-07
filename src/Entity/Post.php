@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PostRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Valid;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ApiResource(
@@ -47,8 +48,11 @@ class Post
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'posts')]
-    #[Groups(['read:item', 'write:Post'])]
+    #[ORM\ManyToOne(inversedBy: 'posts', cascade:['persist'])]
+    #[
+        Groups(['read:item', 'write:Post']),
+        Valid()
+    ]
     private ?Category $category = null;
 
     public function __construct()
