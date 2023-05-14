@@ -21,6 +21,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'method' => 'get',
             'controller' => MeController::class,
             'read' => false,
+            'openapi_context' => [
+                'security' => ['cookieAuth' => ['']]
+            ]
         ]
     ],
     itemOperations: [
