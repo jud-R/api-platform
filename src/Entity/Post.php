@@ -25,7 +25,11 @@ use App\Controller\PostCountController;
     paginationMaximumItemsPerPage: 2,
     paginationClientItemsPerPage: true,
     collectionOperations: [
-        'get',
+        'get' => [
+            'openapi_context' => [
+                'security' => [['bearerAuth' => []]]
+            ]
+        ],
         'post',
         'count' => [
             'method' => 'GET',

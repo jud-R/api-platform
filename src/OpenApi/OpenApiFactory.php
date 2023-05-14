@@ -28,10 +28,10 @@ class OpenApiFactory implements OpenApiFactoryInterface
         }
 
         $schemas= $openApi->getComponents()->getSecuritySchemes();
-        $schemas['cookieAuth'] = new \ArrayObject([
-            'type' => 'apiKey',
-            'in' => 'cookie',
-            'name' => 'PHPSESSID'
+        $schemas['bearerAuth'] = new \ArrayObject([
+            'type' => 'http',
+            'scheme' => 'bearer',
+            'bearerFormat' => 'JWT'
         ]);
 
         $schemas = $openApi->getComponents()->getSchemas();
@@ -49,7 +49,19 @@ class OpenApiFactory implements OpenApiFactoryInterface
             ]
         ]);
 
-        $meOperation = $openApi->getPaths()->getPath('/api/me')->getGet()->withParameters([]);
+        $schemas['Token'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'token' => [
+                    'type' => 'string',
+                    'readonly' => true,
+                ]
+            ]
+        ]);
+
+        $meOperation = $openApi->getPaths()->getPath('/api/me')->getGet()
+        ->withParameters([])
+        ->withSecurity([['bearerAuth' => []]]);
         $mePathItem = $openApi->getPaths()->getPath('/api/me')->withGet($meOperation);
         $openApi->getPaths()->addPath('/api/me', $mePathItem);
 
@@ -69,11 +81,11 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 ),
                 responses: [
                     '200' => [
-                        'description' => 'utilisateur connecté',
+                        'description' => 'Token JWT',
                         'content' => [
                             'application/json' => [
                                 'schema' => [
-                                    '$ref' => '#/components/schemas/User.read.User'
+                                    '$ref' => '#/components/schemas/Token'
                                 ]
                             ]
                         ]
