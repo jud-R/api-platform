@@ -7,6 +7,10 @@ security:
             entity:
                 class: App\Entity\User
                 property: email
+        apikey_user_provider:
+            entity:
+                class: App\Entity\User
+                property: apiKey
         jwt:
             lexik_jwt:
                 class: App\Entity\User
@@ -14,25 +18,30 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        login:
-            pattern: ^/api/login
-            stateless: true
-            provider: app_user_provider
-            json_login:
-                check_path: /api/login
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
-        api:
-            pattern: ^/api
-            stateless: true
-            provider: app_user_provider
+        main:
             lazy: true
-            entry_point: lexik_jwt_authentication.jwt_token_authenticator
-            guard:
-                authenticators:
-                    - lexik_jwt_authentication.jwt_token_authenticator
-            refresh_jwt:
-                check_path: /api/token/refresh
+            provider: apikey_user_provider  
+            custom_authenticators:
+                - App\Security\ApiKeyAuthenticator
+        # login:
+        #     pattern: ^/api/login
+        #     stateless: true
+        #     provider: app_user_provider
+        #     json_login:
+        #         check_path: /api/login
+        #         success_handler: lexik_jwt_authentication.handler.authentication_success
+        #         failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        # api:
+        #     pattern: ^/api
+        #     stateless: true
+        #     provider: app_user_provider
+        #     lazy: true
+        #     entry_point: lexik_jwt_authentication.jwt_token_authenticator
+        #     guard:
+        #         authenticators:
+        #             - lexik_jwt_authentication.jwt_token_authenticator
+        #     refresh_jwt:
+        #         check_path: /api/token/refresh
         # main:
         #     lazy: true
         #     provider: app_user_provider
